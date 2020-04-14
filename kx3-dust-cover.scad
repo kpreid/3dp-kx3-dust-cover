@@ -4,10 +4,10 @@ kx3_height = 87.2;
 kx3_corner_rounding_radius = 1.95;
 
 // Constrained but not maximized parameters
-horizontal_inward_clearance = 2;  // max 3 for VFO knob base
+horizontal_inward_clearance_bottom = 2;  // max 3 for VFO knob base
+horizontal_inward_clearance_top = 4;
 vertical_side_jack_clearance = 5;  // max 9 or so depending on accessory plug diameter
-panel_control_clearance = 21;
-topmost_control_clearance = 4;
+panel_control_clearance_height = 21;
 
 // Chosen parameters
 vertical_wall_thickness = 0.8;
@@ -49,14 +49,16 @@ module exterior_volume() {
     hull() {
         rim_outer_radius = kx3_corner_rounding_radius + vertical_wall_thickness;
         linear_extrude(vertical_side_jack_clearance + horizontal_wall_thickness)
-        offset(r=rim_outer_radius, $fn=30)
-        offset(delta=-rim_outer_radius)
+        corner_round(rim_outer_radius)
         rim_2d();
         
         // create 45° overhang support
-        translate([0, 0, -horizontal_inward_clearance])
+        // Precise form of this would be matching the slope of the horizontal clearance but that would be a line intersection problem, so fudge it.
+        overhang_inset = horizontal_inward_clearance_bottom * 1.6;
+        translate([0, 0, -overhang_inset])
         linear_extrude(epsilon)
-        panel_2d();
+        offset(delta=-overhang_inset)
+        rim_2d();
     }
     
     // Volume for panel controls
@@ -67,8 +69,8 @@ module exterior_volume() {
     
     module panel_2d() {
         square([
-            kx3_width - horizontal_inward_clearance * 2 + vertical_wall_thickness * 2, 
-            kx3_height - horizontal_inward_clearance * 2 + vertical_wall_thickness * 2
+            kx3_width - horizontal_inward_clearance_bottom * 2 + vertical_wall_thickness * 2, 
+            kx3_height - horizontal_inward_clearance_bottom * 2 + vertical_wall_thickness * 2
         ], center=true);
     }
     
@@ -78,9 +80,29 @@ module exterior_volume() {
 }
 
 module panel_clearance_volume() {
-    linear_extrude(panel_control_clearance)
-    square([
-        kx3_width - horizontal_inward_clearance * 2,
-        kx3_height - horizontal_inward_clearance * 2
-    ], center=true);
+    hull() {
+        // bottom
+        linear_extrude(epsilon)
+        corner_round(1)
+        square([
+            kx3_width - horizontal_inward_clearance_bottom * 2,
+            kx3_height - horizontal_inward_clearance_bottom * 2,
+        ], center=true);
+
+        // top (bottom as printed)
+        translate([0, 0, panel_control_clearance_height])
+        mirror([0, 0, 1])
+        linear_extrude(epsilon)
+        corner_round(1)
+        square([
+            kx3_width - horizontal_inward_clearance_top * 2,
+            kx3_height - horizontal_inward_clearance_top * 2,
+        ], center=true);
+    }
+}
+
+module corner_round(r) {
+    offset(r=r, $fn=30)
+    offset(delta=-r)
+    children();
 }
