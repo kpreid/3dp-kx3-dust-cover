@@ -63,7 +63,17 @@ module exterior_volume() {
     
     // Volume for panel controls
     minkowski() {
-        cube([vertical_wall_thickness, vertical_wall_thickness, horizontal_wall_thickness] * 2, center=true);
+        // Shape for top bevel and side walls — a pyramid
+        hull() {
+            linear_extrude(epsilon)
+            square([1, 1] * vertical_wall_thickness * 2, center=true);
+
+            // 45° chamfered top
+            chamfer = horizontal_wall_thickness;
+            linear_extrude(chamfer)
+            offset(delta=-chamfer)
+            square([1, 1] * vertical_wall_thickness * 2, center=true);
+        }
         panel_clearance_volume();
     }
     
