@@ -6,7 +6,7 @@ kx3_corner_rounding_radius = 1.95;
 // Constrained but not maximized parameters
 horizontal_inward_clearance_bottom = 2;  // max 3 for VFO knob base
 horizontal_inward_clearance_top = 4;
-vertical_side_jack_clearance = 5;  // max 9 or so depending on accessory plug diameter
+vertical_side_jack_clearance = 8;  // max 9 or so depending on accessory plug diameter
 panel_control_clearance_height = 21;
 
 // Chosen parameters
