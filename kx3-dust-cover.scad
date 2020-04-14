@@ -1,6 +1,6 @@
 // Measured parameters
 kx3_width = 190;
-kx3_height = 87.2;
+kx3_height = 88;
 kx3_corner_rounding_radius = 1.95;
 
 // Constrained but not maximized parameters
@@ -11,7 +11,7 @@ panel_control_clearance_height = 21;
 
 // Chosen parameters
 vertical_wall_thickness = 0.8;
-horizontal_wall_thickness = 0.4;
+horizontal_wall_thickness = 0.6;  // three layers to ensure good fusion of the logo
 epsilon = 0.02;
 
 
@@ -34,7 +34,16 @@ module main() {
     difference() {
         exterior_volume();
         interior_volume();
+        
+        label_cut();
     }
+}
+
+module label_cut() {
+    // Times appears to be the font used for the Elecraft and KX3 branding (in small-caps)
+    translate([2 /* fudge */, 0, panel_control_clearance_height - epsilon])
+    linear_extrude(horizontal_wall_thickness * 2)
+    text("KX3", spacing=1.1, size=kx3_width * 0.31, font="Times", halign="center", valign="center");
 }
 
 module interior_volume() {
