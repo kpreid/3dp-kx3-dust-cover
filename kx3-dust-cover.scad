@@ -15,12 +15,20 @@ horizontal_wall_thickness = 0.4;
 epsilon = 0.02;
 
 
-difference() {
-    main();
-    translate([0, 0, -500])
-    cube([1000, 1000, 1000]);
+printable();
+
+
+module printable() {
+    rotate([180, 0, 0]) main();
 }
 
+module preview() {
+    difference() {
+        main();
+        translate([0, 0, -500])
+        cube([1000, 1000, 1000]);
+    }
+}
 
 module main() {
     difference() {
