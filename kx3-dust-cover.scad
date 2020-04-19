@@ -13,6 +13,7 @@ panel_control_clearance_height = 21;
 vertical_wall_thickness = 0.8;
 horizontal_wall_thickness = 0.6;  // three layers to ensure good fusion of the logo
 epsilon = 0.02;
+$with_label_cut=false;
 
 
 printable();
@@ -35,6 +36,7 @@ module main() {
         exterior_volume();
         interior_volume();
         
+        if ($with_label_cut)
         label_cut();
     }
 }
